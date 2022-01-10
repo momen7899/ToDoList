@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Login</title>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
     <div style="display: flex;
       align-items: center;
       flex-direction: column;">
+        <div>
+            <p id="p1">Hello World!</p>
+        </div>
         <div >
             <input type="text" placeholder="Enter your username"/>
         </div>
@@ -15,10 +20,11 @@
         </div>
 
         <div>
-            <button style="flex: 1 1 auto;">Login</button>
-            <button style="flex: 1 1 auto;">SignUp</button>
+            <button onclick="login()" style="flex: 1 1 auto;">Login</button>
+            <button onclick="signup()" style="flex: 1 1 auto;">SignUp</button>
         </div>
     </div>
 
+    <script src="index.js"></script>
 </body>
 </html>
