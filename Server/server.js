@@ -4,6 +4,8 @@ const cors = require("cors");
 const app = express();
 const portNumber = 8080
 
+app.use(express.json());
+
 
 app.get('/', (request, response) => {
     response.redirect('/login')
@@ -20,3 +22,5 @@ app.get('/main', (Request, response) => {
 app.listen(portNumber, () => {
     console.log('App Listening to port portNumber')
 });
+
+require("./routes/user.routes.js")(app);
