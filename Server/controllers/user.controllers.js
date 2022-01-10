@@ -1,4 +1,4 @@
-const User = require("../mysql/user.model.js");
+const User = require("../model/user.model.js");
 
 exports.create = (req, res) => {
 
@@ -15,7 +15,7 @@ exports.create = (req, res) => {
     token: req.body.username
   });
 
-  // Save Tutorial in the database
+  // Save User in the database
   User.create(user, (err, data) => {
     if (err)
       res.status(500).send({

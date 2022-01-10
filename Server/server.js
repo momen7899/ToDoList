@@ -24,3 +24,4 @@ app.listen(portNumber, () => {
 });
 
 require("./routes/user.routes.js")(app);
+require("./routes/note.routes.js")(app);
