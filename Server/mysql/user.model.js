@@ -20,8 +20,8 @@ User.create = (newUser, result) => {
   });
 };
 
-User.validUser = (username, password, result) => {
-  sql.query(`SELECT * FROM users WHERE username = ${username} AND password = ${password}`, (err, res) => {
+User.validUser = (user, result) => {
+  sql.query(`SELECT * FROM users WHERE username = '${user.username}' AND password = '${user.password}'`, (err, res) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
@@ -29,7 +29,7 @@ User.validUser = (username, password, result) => {
     }
 
     if (res.length) {
-      console.log("found tutorial: ", res[0]);
+      console.log("found user: ", res[0]);
       result(null, res[0]);
       return;
     }

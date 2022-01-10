@@ -7,7 +7,7 @@ module.exports = app => {
     router.post("/login", user.create);
   
     // Retrieve valid user
-    // router.get("/login", user.findAll);
+    router.get("/login", user.validUser);
 
   
     app.use('/api/user', router);
