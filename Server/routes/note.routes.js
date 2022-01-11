@@ -10,7 +10,7 @@ module.exports = app => {
     router.get("/get", notes.get);
 
     // // update status of a note
-    // router.post("/status", notes.status);
+    router.post("/status", notes.status);
     
     // // delete one item
     // router.post("/delete", notes.delete);

@@ -52,3 +52,31 @@ exports.get = (req, res) => {
   });
   
 };
+
+exports.status = (req, res) => {
+
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  const note = new Note({
+    id: req.body.id,
+    userId: req.body.userId,
+    status: req.body.status ? 1 : 0,
+  });
+  
+  console.log(note)
+
+  Note.status(note, (err, data) => {
+    console.log(err)
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while change status of the Notes."
+      });
+    else res.send(data);
+  });
+  
+};

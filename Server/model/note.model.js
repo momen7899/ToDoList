@@ -2,6 +2,7 @@ const sql = require("../mysql/db.js");
 
 // constructor
 const Note = function(note) {
+  this.id = note.id;
   this.userId = note.userId;
   this.title = note.title;
   this.description = note.description;
@@ -38,23 +39,23 @@ Note.get = (userId, result) => {
             return;
           }
       
-          // not found Tutorial with the id
           result({ kind: "not_found" }, null);
         });
 
 }
 
-Note.status = ( note , result) => {
+Note.status = (note , result) => {
     sql.query("UPDATE notes SET status = ? WHERE id = ? AND userId = ?",
-     [ note.status, note.id, note.usesrId], (err, res) => {
+     [ note.status, note.id, note.userId], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(err, null);
           return;
         }
     
-        console.log("update notes: ", { id: res.insertId, ...note });
-        result(null, { id: res.insertId, ...note });
+        console.log(res)
+        console.log("update notes: ", {note});
+        result(null, {note});
   });
 };
 
