@@ -11,7 +11,7 @@ const Note = function(note) {
 };
 
 
-Note.create = (newNote, res) => {
+Note.create = (newNote, result) => {
     sql.query("INSERT INTO notes SET ?", newNote, (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -24,7 +24,7 @@ Note.create = (newNote, res) => {
   });
 };
 
-Note.get = (userId, res) => {
+Note.get = (userId, result) => {
     sql.query(`SELECT * FROM notes WHERE userId = '${userId}'` ,(err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -44,7 +44,7 @@ Note.get = (userId, res) => {
 
 }
 
-Note.status = ( note , res) => {
+Note.status = ( note , result) => {
     sql.query("UPDATE notes SET status = ? WHERE id = ? AND userId = ?",
      [ note.status, note.id, note.usesrId], (err, res) => {
         if (err) {
@@ -58,7 +58,7 @@ Note.status = ( note , res) => {
   });
 };
 
-Note.delete = ( note , res) => {
+Note.delete = ( note , result) => {
     sql.query("DELETE FROM notes WHERE id = ? AND userId = ?",
      [note.id, note.usesrId], (err, res) => {
         if (err) {
@@ -72,7 +72,7 @@ Note.delete = ( note , res) => {
   });
 };
 
-Note.delete = ( note , res) => {
+Note.delete = ( note , result) => {
     sql.query("DELETE FROM notes WHERE userId = ?",note.usesrId, (err, res) => {
         if (err) {
           console.log("error: ", err);

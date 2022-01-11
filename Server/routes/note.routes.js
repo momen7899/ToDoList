@@ -7,7 +7,7 @@ module.exports = app => {
     router.post("/add", notes.create);
   
     // // get a list of items by specefic user
-    // router.get("/get", notes.get);
+    router.get("/get", notes.get);
 
     // // update status of a note
     // router.post("/status", notes.status);
