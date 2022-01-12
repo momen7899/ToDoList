@@ -12,11 +12,14 @@ module.exports = app => {
     // // update status of a note
     router.post("/status", notes.status);
     
+    // // edit status of a note
+    router.post("/edit", notes.edit);
+
     // // delete one item
-    // router.post("/delete", notes.delete);
+    router.delete("/delete", notes.delete);
 
     // // delete all of user's item
-    // router.post("/deleteAll", notes.deleteAll);
+    router.delete("/deleteAll", notes.deleteAll);
 
     // // search something in notes
     // router.get("/search", notes.search);

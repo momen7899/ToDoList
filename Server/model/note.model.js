@@ -59,9 +59,25 @@ Note.status = (note , result) => {
   });
 };
 
-Note.delete = ( note , result) => {
+Note.edit = (note , result) => {
+  sql.query("UPDATE notes SET ? WHERE id = ? AND userId = ?",
+   [ note, note.id, note.userId], (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      console.log(res)
+      console.log("update notes: ", {note});
+      result(null, {note});
+});
+};
+
+
+Note.delete = (note, result) => {
     sql.query("DELETE FROM notes WHERE id = ? AND userId = ?",
-     [note.id, note.usesrId], (err, res) => {
+     [note.id, note.userId], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(err, null);
@@ -73,16 +89,17 @@ Note.delete = ( note , result) => {
   });
 };
 
-Note.delete = ( note , result) => {
-    sql.query("DELETE FROM notes WHERE userId = ?",note.usesrId, (err, res) => {
-        if (err) {
-          console.log("error: ", err);
-          result(err, null);
-          return;
-        }
+Note.deleteAll = ( note , result) => {
+  console.log("DELETE ALL")
+  sql.query("DELETE FROM notes WHERE userId = ?",[note.userId], (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
     
-        console.log("delete all notes: ", { id: res.insertId, ...note });
-        result(null, { id: res.insertId, ...note });
+      console.log("delete all notes: ", { id: res.insertId, ...note });
+      result(null, { id: res.insertId, ...note });
   });
 };
 
