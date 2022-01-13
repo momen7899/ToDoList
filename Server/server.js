@@ -1,10 +1,18 @@
 const express = require("express");
-const cors = require("cors");
+const cors=require("cors");
+
+const corsOptions ={
+   origin:'*', 
+   credentials:true,
+   optionSuccessStatus:200,
+}
 
 const app = express();
 const portNumber = 8080
 
+app.use(cors(corsOptions))
 app.use(express.json());
+app.use(express.static(".." + '/public'));
 
 
 app.get('/', (request, response) => {
@@ -12,8 +20,9 @@ app.get('/', (request, response) => {
 });
 
 app.get('/login', (request, response) => {
-    response.send('Hello World!')
+    response.sendFile('login/index.html', { root: '../client' })
 });
+
 
 app.get('/main', (Request, response) => {
     response.send('Main')
