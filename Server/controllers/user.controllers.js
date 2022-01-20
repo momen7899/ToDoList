@@ -8,12 +8,17 @@ exports.create = (req, res) => {
     });
   }
 
+  console.log(req)
+  console.log(req.body)
+
   // Create a User
   const user = new User({
     username: req.body.username,
     password: req.body.password,
     token: req.body.username
   });
+
+  console.log(user)
 
   // Save User in the database
   User.create(user, (err, data) => {
