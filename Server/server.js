@@ -25,7 +25,7 @@ app.get('/login', (request, response) => {
 
 
 app.get('/main', (Request, response) => {
-    response.send('Main')
+    response.sendFile('main/index.html', { root: '../client' })
 });
 
 app.listen(portNumber, () => {

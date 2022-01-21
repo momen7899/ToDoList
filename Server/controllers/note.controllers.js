@@ -165,5 +165,40 @@ exports.deleteAll = (req, res) => {
     }
     else res.send(data);
   });
+};
+
+exports.search = (req, res) => {
+
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+   
+  Note.get(req.query.userId, (err, data) => {
+    console.log(err)
+    if (err)
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while get the Notes."
+      });
+    else res.send(validateItems(req.query.search,data));
+  });
   
 };
+
+function validateItems(search,data){
+  let list =[];
+  let i = 0;
+  data.forEach(item => {
+    if(item.title.includes(search)){
+      list[i] = item;
+      i = i+1;
+    }else if(item.description.includes(search)){
+      list[i] = item;
+      i = i+1;
+    }
+  });
+  return list;
+}

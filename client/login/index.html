@@ -3,7 +3,8 @@
 <head>
     <title>Login</title>
     <meta charset="UTF-8"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
 <body>
     <div style="display: flex;
@@ -22,6 +23,48 @@
         </div>
     </div>
 
-    <script src="/client/login/index.js"></script>
+    <script>
+        function login() {  
+            var userName = document.getElementById("userName").value;
+            var password = document.getElementById("password").value;
+
+            axios.get('/api/user/login', {
+                    params: {
+                        username: userName,
+                        password: password
+                    }
+                })
+                .then(function (response) {
+                    console.log(response);
+                    sessionStorage.setItem("userId", response.data.id);
+                    location.replace("http://localhost:8080/main");
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert("Username or password is wrong:(");
+                })
+        }
+
+
+        function signup() {  
+            let userName = document.getElementById("userName").value;
+            let password = document.getElementById("password").value;
+
+            axios.post('/api/user/login', {
+                username: userName,
+                password: password
+            })
+            .then(function (response) {
+                console.log(response);
+                alert("Successfully sign up :)");
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Something went wrong:(\nplease try again in a few moment");
+            });
+
+        }
+
+    </script>
 </body>
 </html>

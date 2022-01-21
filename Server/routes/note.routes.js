@@ -16,13 +16,13 @@ module.exports = app => {
     router.post("/edit", notes.edit);
 
     // // delete one item
-    router.delete("/delete", notes.delete);
+    router.post("/delete", notes.delete);
 
     // // delete all of user's item
-    router.delete("/deleteAll", notes.deleteAll);
+    router.post("/deleteAll", notes.deleteAll);
 
     // // search something in notes
-    // router.get("/search", notes.search);
+    router.get("/search", notes.search);
 
     // // filter notes
     // router.get("filter",notes.filter);

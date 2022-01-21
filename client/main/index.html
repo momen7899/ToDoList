@@ -3,14 +3,233 @@
 <head>
     <title>Main</title>
     <meta charset="UTF-8">
+    <!-- axiois -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+       .grid-container {
+            display: grid;
+            grid-template-columns: 45% 45%;
+        }
+
+        .grid-item {
+            padding-top: 20px;
+            padding-right: 4px;
+            padding-bottom: 20px;
+            padding-left: 20px;
+            text-align: center;
+        }
+
+        .dropdown{
+            padding-top: 4px;
+            padding-right: 12px;
+            padding-bottom: 4px;
+            padding-left: 12px;
+            text-align: center;
+        }
+
+        .center{
+            text-align: center;
+        }
+
+        .notes{
+            background-color: lightblue;
+            border-radius: 25px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            margin-left: 16px;
+            margin-right: 16px;
+        }
+
+        .grid-row{
+            display: grid;
+            align-items: center;
+            grid-template-columns: auto auto auto auto;
+        }
+
+        .grid-row-item {
+            align-items: center;
+            text-align: left;
+        }
+
+        .title{
+            text-align: start;
+        }
+
+        .image{
+            height: 16px;
+            width: 16px;
+        }
+
+        .kc_fab_main_btn {
+            background-color: lightblue;
+            width: 60px;
+            height: 60px;
+            border-radius: 100%;
+            background: lightblue;
+            border: none;
+            outline: none;
+            color: #FFF;
+            font-size: 36px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+            transition: .3s;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+       
+    </style>
+
 </head>
+
 <body>
+   <div id="note_holder" class="grid-container note_holder">
+        <div class="grid-item">
+            <input type="search" id="site-search" name="q" placeholder="Search..." aria-label="Search through site content">
+            <button onclick="search()">Search</button>
+        </div>
+        <div class="grid-item">
+            <select class="dropdown" name="status" id="status">
+                <option class="center" value="All">All</option>
+                <option class="center" value="Done">Done</option>
+                <option class="center" value="not done">Not Done</option>
+            </select>
+
+            <button onclick="createItem()" class="kc_fab_main_btn">+</button>
+        </div>
+    </div>
 
 
-    <p>Hello world</p>
-    <p>Welcome to momen's todo list</p>
+    <script type="text/javascript">
+        let userId = sessionStorage.getItem("userId");
+        let size = 0;
 
+        getNotes();
+
+        function getNotes(){
+            axios.get('/api/note/get', {
+                        params: {
+                            userId: userId
+                        }
+                    })
+                    .then(function (response) {
+                        console.log(response);
+                        response.data.forEach(item=>{
+                            addItems(item)
+                        });
+                    })
+                    .catch(function (error) {
+                    console.log(error);
+                    alert("Something went wrong:(");
+                })
+        }
+
+        
+        function addItems(data){
+            size = size +1;
+            console.log(JSON.stringify(data))
+            $('div.note_holder').append(
+                `<div id="notes" class="grid-item notes">
+                    <h4 class="title"> ${data.title} </h4> 
+                    <h4 class="title"> ${data.description}</h4> 
+                    <div class="grid-row">
+                        <div class="grid-row">
+                            <p class="grid-row-item">${data.date} ${data.time} </p>
+                            <form  class="grid-row-item">
+                                <input type="checkbox" id="status" name="status" value="status">
+                                <label for="status">Done<label><br>
+                            </form>
+                            <img onclick="editItem(${data.id},${data.title},${data.description})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/860/860814.png">
+
+                            <img onclick="deleteItem(${data.id})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png">
+                        </div>
+                    </div>
+                </div>`);
+        }
+
+
+        function createItem(){
+            let titleNote =  window.prompt("Please enter your title:","title");
+            let descriptionNote =  window.prompt("Please enter your description:","description");
+            axios.post('/api/note/add', {
+                userId: userId,
+                title: titleNote,
+                description: descriptionNote,
+                status: false
+            })
+            .then(function (response) {
+                console.log(response);
+                addItems(response.data)
+                alert("Successfully add item :)");
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Something went wrong:(\nplease try again later");
+            });
+        }
+
+        function editItem(id,titleDefault,descriptionDefault){
+            let titleNote =  window.prompt("Please edit your title:",titleDefault);
+            let descriptionNote =  window.prompt("Please edit your description:",descriptionDefault);
+            axios.post('/api/note/edit', {
+                id: id,
+                userId: userId,
+                title: titleNote,
+                description: descriptionNote
+            })
+            .then(function (response) {
+                console.log(response);
+                location.reload();
+                alert("Successfully edit item :)");
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Something went wrong:(\nplease try again later");
+            });
+        }
+
+        function deleteItem(id){
+            axios.post('api/note/delete', {
+                id: id,
+                userId: userId,
+            })
+            .then(function (response) {
+                console.log(response);
+                location.reload();
+                alert("Successfully delete item :)");
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Something went wrong:(\nplease try again later");
+            });
+        }
+
+
+        function search(){
+            let search = document.getElementById('site-search').value;
+            axios.get('/api/note/search', {
+                    params: {
+                        userId: userId,
+                        search: search
+                    }
+                })
+                .then(function (response) {
+                    console.log(response);
+                    for (let i = 0; i<size; i++) {
+                        document.getElementById('notes').remove();
+                    }
+                    response.data.forEach(item=>{
+                        addItems(item)
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert("Something went wrong:(");
+                })
+        }
+
+
+    </script>
 
 </body>
 </html>
