@@ -89,7 +89,7 @@
             <button onclick="search()">Search</button>
         </div>
         <div class="grid-item">
-            <select class="dropdown" name="status" id="status">
+            <select class="dropdown" name="status" id="filter">
                 <option class="center" value="All">All</option>
                 <option class="center" value="Done">Done</option>
                 <option class="center" value="not done">Not Done</option>
@@ -103,6 +103,7 @@
     <script type="text/javascript">
         let userId = sessionStorage.getItem("userId");
         let size = 0;
+        let notes = []
 
         getNotes();
 
@@ -126,27 +127,64 @@
 
         
         function addItems(data){
+            notes[size] = data;
             size = size +1;
             console.log(JSON.stringify(data))
-            $('div.note_holder').append(
-                `<div id="notes" class="grid-item notes">
-                    <h4 class="title"> ${data.title} </h4> 
-                    <h4 class="title"> ${data.description}</h4> 
-                    <div class="grid-row">
+            if(data.status == 0){
+                $('div.note_holder').append(
+                    `<div id="notes" class="grid-item notes">
+                        <h4 class="title"> ${data.title} </h4> 
+                        <h4 class="title"> ${data.description}</h4> 
                         <div class="grid-row">
-                            <p class="grid-row-item">${data.date} ${data.time} </p>
-                            <form  class="grid-row-item">
-                                <input type="checkbox" id="status" name="status" value="status">
-                                <label for="status">Done<label><br>
-                            </form>
-                            <img onclick="editItem(${data.id},${data.title},${data.description})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/860/860814.png">
+                            <div class="grid-row">
+                                <p class="grid-row-item">${data.date} ${data.time} </p>
+                                <form  class="grid-row-item">
+                                    <input onclick="changeStatus(${data.id})" type="checkbox" id="status" name="status" value="status">
+                                    <label for="status">Done<label><br>
+                                </form>
+                                <img onclick="editItem(${data.id},${data.title},${data.description})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/860/860814.png">
 
-                            <img onclick="deleteItem(${data.id})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png">
+                                <img onclick="deleteItem(${data.id})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png">
+                            </div>
                         </div>
-                    </div>
-                </div>`);
+                    </div>`);
+            }else if(data.status == 1){
+                $('div.note_holder').append(
+                    `<div id="notes" class="grid-item notes">
+                        <h4 class="title"> ${data.title} </h4> 
+                        <h4 class="title"> ${data.description}</h4> 
+                        <div class="grid-row">
+                            <div class="grid-row">
+                                <p class="grid-row-item">${data.date} ${data.time} </p>
+                                <form  class="grid-row-item">
+                                    <input onclick="changeStatus(${data.id})" type="checkbox" id="status" name="status" value="status" checked>
+                                    <label for="status">Done<label><br>
+                                </form>
+                                <img onclick="editItem(${data.id},${data.title},${data.description})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/860/860814.png">
+
+                                <img onclick="deleteItem(${data.id})" class="grid-row-item image" src="https://cdn-icons-png.flaticon.com/512/1214/1214428.png">
+                            </div>
+                        </div>
+                    </div>`);
+            }
         }
 
+        function removeNotes(){
+            for (let i = 0; i<size; i++) {
+                document.getElementById('notes').remove();
+            }
+            size = 0;
+            notes = [];
+        }
+
+        function getStatus(id){
+            for (let i = 0; i<size; i++) {
+                if(notes[i].id == id){
+                    return notes[i].status === 0 ? false : true;
+                }
+            }
+        }
+        
 
         function createItem(){
             let titleNote =  window.prompt("Please enter your title:","title");
@@ -215,9 +253,7 @@
                 })
                 .then(function (response) {
                     console.log(response);
-                    for (let i = 0; i<size; i++) {
-                        document.getElementById('notes').remove();
-                    }
+                    removeNotes();
                     response.data.forEach(item=>{
                         addItems(item)
                     });
@@ -228,6 +264,55 @@
                 })
         }
 
+
+        function changeStatus(id){
+            axios.post('/api/note/status', {
+                userId: userId,
+                id: id,
+                status: !getStatus(id)
+            })
+            .then(function (response) {
+                console.log(response);
+            })
+            .catch(function (error) {
+                console.log(error);
+                alert("Something went wrong:(\nplease try again later");
+            });
+        }
+
+
+        document.getElementById('filter').addEventListener('change', function() {
+            console.log('You selected: ', this.value);
+            let filter = 0;
+            if(this.value === 'All'){
+                filter = 1;
+            }else if(this.value === 'Done'){
+                filter = 2;
+            }else if(this.value === 'not done'){
+                filter = 3;
+            }
+            filterItem(filter);
+        });
+
+        function filterItem(filter){
+            axios.get('/api/note/filter', {
+                    params: {
+                        userId: userId,
+                        filter: filter
+                    }
+                })
+                .then(function (response) {
+                    console.log(response);
+                    removeNotes();
+                    response.data.forEach(item=>{
+                        addItems(item)
+                    });
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    alert("Something went wrong:(");
+                })
+        }
 
     </script>
 

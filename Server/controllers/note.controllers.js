@@ -202,3 +202,58 @@ function validateItems(search,data){
   });
   return list;
 }
+
+exports.filter = (req, res) => {
+
+  if (!req.body) {
+    res.status(400).send({
+      message: "Content can not be empty!"
+    });
+  }
+
+  // all type = 1 , done type = 2, un done type = 3
+  let filterType = req.query.filter;
+  
+  console.log(filterType);
+  console.log(filterType === '2');
+  if(filterType === '1'){
+    console.log("all where status = 1");
+
+    Note.get(req.query.userId, (err, data) => {
+      console.log(err)
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while get the Notes."
+        });
+      else res.send(data);
+    });
+  }else if(filterType === '2'){
+    console.log("done where status = 1");
+
+    Note.filterDone(req.query.userId, (err, data) => {
+      console.log(err)
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while get the Notes."
+        });
+      else res.send(data);
+    });
+  }else if(filterType === '3'){
+    console.log("un done where status = 0");
+    Note.filterUnDone(req.query.userId, (err, data) => {
+      console.log(err)
+      if (err)
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while get the Notes."
+        });
+      else res.send(data);
+    });
+  }else{
+    res.send({
+      error:"not define filter type"
+    })
+  }
+};

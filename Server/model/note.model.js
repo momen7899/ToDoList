@@ -41,8 +41,45 @@ Note.get = (userId, result) => {
       
           result({ kind: "not_found" }, null);
         });
-
 }
+
+Note.filterDone = (userId, result) => {
+  sql.query(`SELECT * FROM notes WHERE userId = '${userId}' AND status = 1` ,(err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      if (res.length) {
+          console.log("found notes");
+          console.log(res);
+          result(null, res);
+          return;
+        }
+    
+        result({ kind: "not_found" }, {});
+      });
+}
+
+Note.filterUnDone = (userId, result) => {
+  sql.query(`SELECT * FROM notes WHERE userId = '${userId}' AND status = 0` ,(err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(err, null);
+        return;
+      }
+  
+      if (res.length) {
+          console.log("found notes");
+          result(null, res);
+          return;
+        }
+    
+        result({ kind: "not_found" }, null);
+      });
+}
+
 
 Note.status = (note , result) => {
     sql.query("UPDATE notes SET status = ? WHERE id = ? AND userId = ?",

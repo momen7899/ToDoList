@@ -25,7 +25,7 @@ module.exports = app => {
     router.get("/search", notes.search);
 
     // // filter notes
-    // router.get("filter",notes.filter);
+    router.get("/filter",notes.filter);
 
     app.use('/api/note', router);
   };
